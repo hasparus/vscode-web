@@ -3,7 +3,7 @@ const child_process = require("child_process");
 const fs = require("fs");
 const fse = require("fs-extra");
 const glob = require("glob");
-const rmdir = require('rimraf');
+const rmdir = require("rimraf");
 
 const vscodeVersion = "1.58.0";
 
@@ -17,9 +17,9 @@ process.chdir("vscode");
 child_process.execSync(`git checkout -q ${vscodeVersion}`, {
   stdio: "inherit",
 });
-if (!fs.existsSync("node_modules")) {
-  child_process.execSync("yarn", { stdio: "inherit" });
-}
+
+child_process.execSync("yarn --verbose", { stdio: "inherit" });
+
 // Use simple workbench
 fs.copyFileSync(
   "../workbench.ts",
@@ -87,11 +87,11 @@ for (const extension of extensionsContent) {
     if (fs.existsSync(extensionPackageNLSPath)) {
       packageNLS = JSON.parse(fs.readFileSync(extensionPackageNLSPath));
     }
-  
+
     extensions.push({
       packageJSON,
       extensionPath: extension,
-      packageNLS
+      packageNLS,
     });
   }
 }
@@ -100,5 +100,3 @@ const extensionsVar =
   "var extensions =" + JSON.stringify(extensions, { space: "\t", quote: "" });
 
 fs.writeFileSync("../dist/extensions.js", extensionsVar);
-
-
